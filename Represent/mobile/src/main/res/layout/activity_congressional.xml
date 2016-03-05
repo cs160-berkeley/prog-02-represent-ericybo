@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:orientation="vertical"
+    tools:context="com.example.eric.represent.CongressionalActivity">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/title"
+                android:textSize="45sp"
+                android:textColor="#000000"
+                android:text="@string/represent"
+                android:layout_centerHorizontal="true"
+                android:padding="10dp" />
+
+            <include android:id="@+id/rep1"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:layout_below="@id/title"
+                android:layout_marginBottom="10dp"
+                layout="@layout/rep1"/>
+
+            <include android:id="@+id/rep2"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:layout_below="@id/rep1"
+                android:layout_marginBottom="10dp"
+                layout="@layout/rep2"/>
+
+            <include android:id="@+id/rep3"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:layout_below="@id/rep2"
+                android:layout_marginBottom="10dp"
+                layout="@layout/rep3"/>
+
+            <!--<include android:id="@+id/rep4"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="120dp"-->
+                <!--android:layout_below="@id/rep3"-->
+                <!--android:layout_marginBottom="10dp"-->
+                <!--layout="@layout/rep4"/>-->
+        </RelativeLayout>
+    </ScrollView>
+
+</RelativeLayout>

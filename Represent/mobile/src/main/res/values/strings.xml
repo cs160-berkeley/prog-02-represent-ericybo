@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">Represent</string>
+    <string name="logo_content_description">represent_logo</string>
+    <string name="represent">Represent!</string>
+    <string name="location">Find by Location</string>
+    <string name="zipcode">Find by Zip Code</string>
+    <string name="hint">Zip Code</string>
+    <string name="rep_pic_content_desciption">representative_picture</string>
+    <string name="warner">Sen. Mark Warner</string>
+    <string name="d">D</string>
+    <string name="kaine">Sen. Tim Kaine</string>
+    <string name="beyer">Rep. Donald S. Beyer Jr.</string>
+    <string name="email">Email</string>
+    <string name="website">Website</string>
+    <string name="title_activity_wear">WearActivity</string>
+    <string name="hello_round">Hello Round World!</string>
+    <string name="hello_square">Hello Square World!</string>
+</resources>

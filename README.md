@@ -4,7 +4,7 @@ Briefly describe your app here.
 
 ## Authors
 
-FirstName LastName ([your_email@berkeley.edu](mailto:your_email@berkeley.edu))
+Eric Bo ([ericbo@berkeley.edu](mailto:ericbo@berkeley.edu))
 
 ## Demo Video
 
@@ -16,5 +16,6 @@ See [your demo video title here] (https://link_to_your_video)
 
 ## Acknowledgments
 
-* Hat tip to anyone who's code was used
-* Any other support
+* ActionFragment Credits: http://stackoverflow.com/questions/24969086/is-there-an-easy-way-to-create-an-action-button-fragment
+* Help from friends
+* Skeleton code by staff
