@@ -75,7 +75,7 @@ public class WatchToPhoneService extends Service implements GoogleApiClient.Conn
 
     @Override //alternate method to connecting: no longer create this in a new thread, but as a callback
     public void onConnected(Bundle bundle) {
-        Log.d("TAG", "in onconnected");
+        //Log.d("TAG", "in onconnected");
         final Service _this = this;
         final String repnum = data;
         Wearable.NodeApi.getConnectedNodes(mWatchApiClient)
@@ -83,15 +83,17 @@ public class WatchToPhoneService extends Service implements GoogleApiClient.Conn
                     @Override
                     public void onResult(NodeApi.GetConnectedNodesResult getConnectedNodesResult) {
                         nodes = getConnectedNodesResult.getNodes();
-                        Log.d("TAG", "found nodes");
+                        //Log.d("TAG", "found nodes");
                         //when we find a connected node, we populate the list declared above
                         //finally, we can send a message
-                        sendMessage("/path", repnum);
-                        Log.d("TAG", "sent");
-                        //stop self
-                        //_this.stopSelf();
+                        if (repnum != null)
+                            sendMessage("/path", repnum);
+                        else
+                            sendMessage("/shake", "shake");
+                        //Log.d("TAG", "sent");
                     }
                 });
+        _this.stopSelf();
     }
 
     @Override //we need this to implement GoogleApiClient.ConnectionsCallback

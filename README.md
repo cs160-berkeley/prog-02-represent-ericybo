@@ -8,11 +8,13 @@ Eric Bo ([ericbo@berkeley.edu](mailto:ericbo@berkeley.edu))
 
 ## Demo Video
 
-See [your demo video title here] (https://link_to_your_video)
+See Prog2B (https://youtu.be/gJqmggsAQEQ)
 
 ## Screenshots
 
 <img src="screenshots/main.png" height="400" alt="Screenshot"/>
+<img src="screenshots/detailed.png" height="400" alt="Screenshot"/>
+<img src="screenshots/congressional.png" height="400" alt="Screenshot"/>
 
 ## Acknowledgments
 

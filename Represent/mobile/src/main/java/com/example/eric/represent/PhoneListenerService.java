@@ -26,6 +26,7 @@ public class PhoneListenerService extends WearableListenerService {
             Intent intent = new Intent(getBaseContext(), DetailedActivity.class);
             String value = new String(messageEvent.getData(), StandardCharsets.UTF_8);
             intent.putExtra("REP NUM", Integer.parseInt(value));
+            Log.d("TAG", "value " + value);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
             // so you may notice this crashes the phone because it's
@@ -33,6 +34,12 @@ public class PhoneListenerService extends WearableListenerService {
             // replace sending a toast with, like, starting a new activity or something.
             // who said skeleton code is untouchable? #breakCSconceptions
 
+        } else if ( messageEvent.getPath().equalsIgnoreCase("/shake") ) {
+            Intent intent = new Intent(getBaseContext(), CongressionalActivity.class);
+            intent.putExtra("LAT", 37);
+            intent.putExtra("LON", -95);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
         } else {
             super.onMessageReceived( messageEvent );
         }

@@ -15,27 +15,12 @@ import android.support.wearable.view.GridViewPager;
 import android.util.Log;
 import android.widget.TextView;
 
-public class WearActivity extends Activity implements SensorEventListener {
+public class WearActivity extends Activity {
 
     private TextView mTextView;
     private SensorManager mSensorManager;
+    private ShakeListener mSensorListener;
     private Sensor mSensor;
-
-    private final SensorEventListener mSensorListener = new SensorEventListener() {
-
-        public void onSensorChanged(SensorEvent se) {
-            float x = se.values[0];
-            float y = se.values[1];
-            float z = se.values[2];
-//            mAccelLast = mAccelCurrent;
-//            mAccelCurrent = (float) Math.sqrt((double) (x*x + y*y + z*z));
-//            float delta = mAccelCurrent - mAccelLast;
-//            mAccel = mAccel * 0.9f + delta; // perform low-cut filter
-        }
-
-        public void onAccuracyChanged(Sensor sensor, int accuracy) {
-        }
-    };
 
     @Override
     protected void onResume() {
@@ -47,12 +32,6 @@ public class WearActivity extends Activity implements SensorEventListener {
     protected void onPause() {
         mSensorManager.unregisterListener(mSensorListener);
         super.onPause();
-    }
-
-    @Override
-    public final void onSensorChanged(SensorEvent event) {
-        // Use values from event.values array
-        // do stuff for shake here!!!
     }
 
     // A simple container for static data in each page
@@ -75,6 +54,7 @@ public class WearActivity extends Activity implements SensorEventListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wear);
+        mSensorListener = new ShakeListener();
 //        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 //        mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
@@ -125,6 +105,35 @@ public class WearActivity extends Activity implements SensorEventListener {
 
     }
 
+    class ShakeListener implements SensorEventListener {
+        private boolean init = true;
+        private float x, y, z;
+
+        public void onSensorChanged(SensorEvent se) {
+            float x2 = se.values[0];
+            float y2 = se.values[1];
+            float z2 = se.values[2];
+            float dx = x2-x;
+            float dy = y2-y;
+            float dz = z2-z;
+            if (!init) {
+                if (dx + dy + dz > 100) {
+                    //go to random zip
+                    Intent sendIntent = new Intent(getBaseContext(), WatchToPhoneService.class);
+                    sendIntent.putExtra("SHAKE", "yes");
+                    startService(sendIntent);
+                }
+            }
+            x = x2;
+            y = y2;
+            z = z2;
+            init = false;
+        }
+        public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+        }
+    }
+
     public class SampleGridPagerAdapter extends FragmentGridPagerAdapter {
 
         private final Context mContext;
@@ -143,29 +152,42 @@ public class WearActivity extends Activity implements SensorEventListener {
         // Obtain the number of pages (horizontal)
         @Override
         public int getColumnCount(int rowNum) {
-            return pages.length;
+            return pages.length + 1;
         }
 
         // Override methods in FragmentGridPagerAdapter
         // Obtain the UI fragment at the specified position
         @Override
         public Fragment getFragment(int useless, int index) {
+            if (index == pages.length) {
+                final Fragment conFragment = ActionFragment.create("Click Here for", "2012 Vote Data", new ActionFragment.Listener() {
+                    @Override
+                    public void onActionPerformed() {
+                        Intent sendIntent = new Intent(getBaseContext(), VoteActivity.class);
+                        String[] counties = {"Alameda", "Orange", "Santa Clara", "Kern", "San Francisco", "Napa", "Los Angeles", "Humboldt", "Riverside", "Alpine"};
+                        sendIntent.putExtra("stateCounty", "CA - " + counties[(int)(Math.random()*counties.length)]);
+                        int votePercent = (int)(Math.random()*20) + 40;
+                        sendIntent.putExtra("obama", votePercent);
+                        sendIntent.putExtra("romney", 100-votePercent);
+                        startActivity(sendIntent);
+                    }
+                });
+                return conFragment;
+            }
             Page page = pages[index];
-            final String repnum = index + 1 + "";
+            Log.d("TAG", "i " + index);
+            final int cpy = index;
             String line1 = "(" + page.party + ") " + page.senOrRep;
-                    //page.titleRes != 0 ? mContext.getString(page.titleRes) : null;
             String line2 = page.name;
-                    //page.textRes != 0 ? mContext.getString(page.textRes) : null;
             //CardFragment conFragment = CardFragment.create(line1, line2);
-
             final Fragment conFragment = ActionFragment.create(line1, line2, new ActionFragment.Listener() {
                 @Override
                 public void onActionPerformed() {
-                    Log.d("TAG", "IM CLICKABLE");
-                    Log.d("TAG", repnum);
+                    Log.d("TAG", "cpy " + cpy);
                     //Toast.makeText(getBaseContext(), "I am clickable!!!", Toast.LENGTH_SHORT).show();
                     //switch to this congressperon's detailed view
                     Intent sendIntent = new Intent(getBaseContext(), WatchToPhoneService.class);
+                    String repnum = cpy + "";
                     sendIntent.putExtra("repnum", repnum);
                     startService(sendIntent);
                 }

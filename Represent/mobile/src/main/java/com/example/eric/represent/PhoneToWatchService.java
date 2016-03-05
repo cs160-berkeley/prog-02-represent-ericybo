@@ -52,7 +52,6 @@ public class PhoneToWatchService extends Service {
         final String data = extras.getString("data");
 
         // Send the message with the cat name
-        final Service _this = this;
         new Thread(new Runnable() {
             @Override
             public void run() { //nice to have a separate thread so it's faster & separate~
@@ -60,8 +59,6 @@ public class PhoneToWatchService extends Service {
                 mApiClient.connect(); //you HAVE to call connect on the API client!!
                 //now that you're connected, send a massage with the cat name
                 sendMessage("/" + "path", data); //first arg is path
-                //stop self
-                //_this.stopSelf();
             }
         }).start();
 

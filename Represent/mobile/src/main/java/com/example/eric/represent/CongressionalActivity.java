@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
 public class CongressionalActivity extends AppCompatActivity {
 
@@ -13,6 +14,14 @@ public class CongressionalActivity extends AppCompatActivity {
         setContentView(R.layout.activity_congressional);
 
         getSupportActionBar().hide();
+
+        int lat = 0;
+        int lon = 0;
+        if(getIntent().getIntExtra("LAT", -1) != -1) {
+            lat = getIntent().getIntExtra("LAT", -1);
+            lon = getIntent().getIntExtra("LON", -1);
+            Toast.makeText(getBaseContext(), "New lat: " + lat + "; New lon: " + lon, Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void goToDetailed1(View view) {

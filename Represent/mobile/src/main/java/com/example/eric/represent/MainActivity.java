@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private String lookup(String zipcode) {
+    public String lookup(String zipcode) {
         //find data using API and zipcode
         String senOrRep1 = "Senator";
         String name1 = "Mark Warner";
