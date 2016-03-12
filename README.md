@@ -1,10 +1,6 @@
 # PROG 02: Represent!
 
-<<<<<<< HEAD
 My Represent app takes the current location or an entered zip code and finds the Senators & Representatives for that place. It displays them on the phone, and the names come up on the watch as well. More information, including committees and bills sponsored, can be displayed about each person on the phone as well. The watch also has an extra view that displays the results of the 2012 Presidential election for the country the current location or zip code is in.
-=======
-My Represent app!
->>>>>>> origin/master
 
 ## Authors
 
