@@ -10,6 +10,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.support.wearable.view.CardFragment;
 import android.support.wearable.view.FragmentGridPagerAdapter;
 import android.support.wearable.view.GridViewPager;
 import android.util.Log;
@@ -17,10 +18,9 @@ import android.widget.TextView;
 
 public class WearActivity extends Activity {
 
-    private TextView mTextView;
     private SensorManager mSensorManager;
     private ShakeListener mSensorListener;
-    private Sensor mSensor;
+    private String zipOrLatLon, state, county, obama, romney;
 
     @Override
     protected void onResume() {
@@ -39,11 +39,13 @@ public class WearActivity extends Activity {
         String party;
         String senOrRep;
         String name;
+        String num;
 
-        public Page(String p, String s, String n) {
+        public Page(String p, String s, String n, String u) {
             party = p;
             senOrRep = s;
             name = n;
+            num = u;
         }
     }
 
@@ -55,8 +57,6 @@ public class WearActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wear);
         mSensorListener = new ShakeListener();
-//        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-//        mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         mSensorManager.registerListener(mSensorListener, mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_NORMAL);
         Intent intent = getIntent();
@@ -69,23 +69,29 @@ public class WearActivity extends Activity {
 //            fragmentTransaction.commit();
             return;
         } else {
+            zipOrLatLon = extras.getString("zipOrLatLon");
+            state = extras.getString("state");
+            county = extras.getString("county");
+            obama = extras.getString("obama");
+            romney = extras.getString("romney");
             if (extras.getString("3or4").equals("4")) {
                 pages = new Page[4];
                 String party = extras.getString("party4");
                 String senOrRep = extras.getString("senOrRep4");
                 String name = extras.getString("name4");
-                pages[3] = new Page(party, senOrRep, name);
+                pages[3] = new Page(party, senOrRep, name, "4");
+                Log.d("TAG", "4 reps");
             }
             for (int x = 1; x < 4; x++) {
                 String party = extras.getString("party" + x);
                 String senOrRep = extras.getString("senOrRep" + x);
                 String name = extras.getString("name" + x);
-                pages[x-1] = new Page(party, senOrRep, name);
+                pages[x-1] = new Page(party, senOrRep, name, x + "");
                 //Log.d("TAG", name);
             }
         }
         final GridViewPager pager = (GridViewPager) findViewById(R.id.pager);
-        pager.setAdapter(new SampleGridPagerAdapter(this, getFragmentManager()));
+        pager.setAdapter(new GridPagerAdapter(this, getFragmentManager()));
 //        final String party = extras.getString("party3");
 //        final String senOrRep = extras.getString("senOrRep3");
 //        final String name = extras.getString("name3");
@@ -117,7 +123,7 @@ public class WearActivity extends Activity {
             float dy = y2-y;
             float dz = z2-z;
             if (!init) {
-                if (dx + dy + dz > 100) {
+                if (dx*dx + dy*dy + dz*dz > 100) {
                     //go to random zip
                     Intent sendIntent = new Intent(getBaseContext(), WatchToPhoneService.class);
                     sendIntent.putExtra("SHAKE", "yes");
@@ -134,11 +140,11 @@ public class WearActivity extends Activity {
         }
     }
 
-    public class SampleGridPagerAdapter extends FragmentGridPagerAdapter {
+    public class GridPagerAdapter extends FragmentGridPagerAdapter {
 
         private final Context mContext;
 
-        public SampleGridPagerAdapter(Context ctx, FragmentManager fm) {
+        public GridPagerAdapter(Context ctx, FragmentManager fm) {
             super(fm);
             mContext = ctx;
         }
@@ -152,7 +158,7 @@ public class WearActivity extends Activity {
         // Obtain the number of pages (horizontal)
         @Override
         public int getColumnCount(int rowNum) {
-            return pages.length + 1;
+            return pages.length + 1; //+1 for vote view
         }
 
         // Override methods in FragmentGridPagerAdapter
@@ -160,45 +166,110 @@ public class WearActivity extends Activity {
         @Override
         public Fragment getFragment(int useless, int index) {
             if (index == pages.length) {
-                final Fragment conFragment = ActionFragment.create("Click Here for", "2012 Vote Data", new ActionFragment.Listener() {
-                    @Override
-                    public void onActionPerformed() {
-                        Intent sendIntent = new Intent(getBaseContext(), VoteActivity.class);
-                        String[] counties = {"Alameda", "Orange", "Santa Clara", "Kern", "San Francisco", "Napa", "Los Angeles", "Humboldt", "Riverside", "Alpine"};
-                        sendIntent.putExtra("stateCounty", "CA - " + counties[(int)(Math.random()*counties.length)]);
-                        int votePercent = (int)(Math.random()*20) + 40;
-                        sendIntent.putExtra("obama", votePercent);
-                        sendIntent.putExtra("romney", 100-votePercent);
-                        startActivity(sendIntent);
-                    }
-                });
-                return conFragment;
+                if (obama.equals("null")) {
+                    final CardFragment voteFragment = CardFragment.create("2012 Pres. Vote"
+                            , state + "\n" + "No voting data available");
+                    return voteFragment;
+                } else {
+                    final CardFragment voteFragment = CardFragment.create("2012 Pres. Vote"
+                            , county + ", " + state + "\n" + "Obama - " + obama + "%" + "\n" + "Romney - " + romney + "%");
+                    return voteFragment;
+                }
             }
+            Log.d("TAG", "index: " + index);
             Page page = pages[index];
-            Log.d("TAG", "i " + index);
-            final int cpy = index;
             String line1 = "(" + page.party + ") " + page.senOrRep;
             String line2 = page.name;
-            //CardFragment conFragment = CardFragment.create(line1, line2);
-            final Fragment conFragment = ActionFragment.create(line1, line2, new ActionFragment.Listener() {
+            ActionFragment.Listener temp1 = new ActionFragment.Listener() {
                 @Override
                 public void onActionPerformed() {
-                    Log.d("TAG", "cpy " + cpy);
-                    //Toast.makeText(getBaseContext(), "I am clickable!!!", Toast.LENGTH_SHORT).show();
                     //switch to this congressperon's detailed view
                     Intent sendIntent = new Intent(getBaseContext(), WatchToPhoneService.class);
-                    String repnum = cpy + "";
-                    sendIntent.putExtra("repnum", repnum);
+                    sendIntent.putExtra("repnum", "1");
+                    if (zipOrLatLon.length() == 5) {
+                        sendIntent.putExtra("zipcode", zipOrLatLon);
+                    } else {
+                        String[] temp = zipOrLatLon.split("_");
+                        String lat = temp[0];
+                        String lon = temp[1];
+                        sendIntent.putExtra("lat", lat);
+                        sendIntent.putExtra("lon", lon);
+                    }
                     startService(sendIntent);
                 }
-            });
-
-            // Advanced settings (card gravity, card expansion/scrolling)
-//            fragment.setCardGravity(page.cardGravity);
-//            fragment.setExpansionEnabled(page.expansionEnabled);
-//            fragment.setExpansionDirection(page.expansionDirection);
-//            fragment.setExpansionFactor(page.expansionFactor);
-            return conFragment;
+            };
+            ActionFragment.Listener temp2 = new ActionFragment.Listener() {
+                @Override
+                public void onActionPerformed() {
+                    //switch to this congressperon's detailed view
+                    //switch to this congressperon's detailed view
+                    Intent sendIntent = new Intent(getBaseContext(), WatchToPhoneService.class);
+                    sendIntent.putExtra("repnum", "2");
+                    if (zipOrLatLon.length() == 5) {
+                        sendIntent.putExtra("zipcode", zipOrLatLon);
+                    } else {
+                        String[] temp = zipOrLatLon.split("_");
+                        String lat = temp[0];
+                        String lon = temp[1];
+                        sendIntent.putExtra("lat", lat);
+                        sendIntent.putExtra("lon", lon);
+                    }
+                    startService(sendIntent);
+                }
+            };
+            ActionFragment.Listener temp3 = new ActionFragment.Listener() {
+                @Override
+                public void onActionPerformed() {
+                    //switch to this congressperon's detailed view
+                    Intent sendIntent = new Intent(getBaseContext(), WatchToPhoneService.class);
+                    sendIntent.putExtra("repnum", "3");
+                    if (zipOrLatLon.length() == 5) {
+                        sendIntent.putExtra("zipcode", zipOrLatLon);
+                    } else {
+                        String[] temp = zipOrLatLon.split("_");
+                        String lat = temp[0];
+                        String lon = temp[1];
+                        sendIntent.putExtra("lat", lat);
+                        sendIntent.putExtra("lon", lon);
+                    }
+                    startService(sendIntent);
+                }
+            };
+            ActionFragment.Listener temp4 = new ActionFragment.Listener() {
+                @Override
+                public void onActionPerformed() {
+                    //switch to this congressperon's detailed view
+                    Intent sendIntent = new Intent(getBaseContext(), WatchToPhoneService.class);
+                    sendIntent.putExtra("repnum", "4");
+                    if (zipOrLatLon.length() == 5) {
+                        sendIntent.putExtra("zipcode", zipOrLatLon);
+                    } else {
+                        String[] temp = zipOrLatLon.split("_");
+                        String lat = temp[0];
+                        String lon = temp[1];
+                        sendIntent.putExtra("lat", lat);
+                        sendIntent.putExtra("lon", lon);
+                    }
+                    startService(sendIntent);
+                }
+            };
+            if (page.num.equals("1")) {
+                Log.d("TAG", "num " + page.num);
+                final Fragment conFragment = ActionFragment.create(line1, line2, temp1);
+                return conFragment;
+            } else if (page.num.equals("2")) {
+                Log.d("TAG", "num " + page.num);
+                final Fragment conFragment = ActionFragment.create(line1, line2, temp2);
+                return conFragment;
+            } else if (page.num.equals("3")) {
+                Log.d("TAG", "num " + page.num);
+                final Fragment conFragment = ActionFragment.create(line1, line2, temp3);
+                return conFragment;
+            } else {
+                Log.d("TAG", "num " + page.num);
+                final Fragment conFragment = ActionFragment.create(line1, line2, temp4);
+                return conFragment;
+            }
         }
     };
 }

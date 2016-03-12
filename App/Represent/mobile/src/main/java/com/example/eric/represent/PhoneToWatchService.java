@@ -50,6 +50,11 @@ public class PhoneToWatchService extends Service {
         }
         //final String catName = extras.getString("CAT_NAME"); //parsing info passed from the intent
         final String data = extras.getString("data");
+        final String zipOrLatLon = extras.getString("zipOrLatLon");
+        final String state = extras.getString("state");
+        final String county = extras.getString("county");
+        final String obama = extras.getString("obama");
+        final String romney = extras.getString("romney");
 
         // Send the message with the cat name
         new Thread(new Runnable() {
@@ -57,8 +62,8 @@ public class PhoneToWatchService extends Service {
             public void run() { //nice to have a separate thread so it's faster & separate~
                 //first, connect to the apiclient
                 mApiClient.connect(); //you HAVE to call connect on the API client!!
-                //now that you're connected, send a massage with the cat name
-                sendMessage("/" + "path", data); //first arg is path
+                //now that you're connected, send a massage
+                sendMessage(zipOrLatLon + "|" + state + "|" + county + "|" + obama + "|" + romney, data); //first arg is path
             }
         }).start();
 

@@ -5,35 +5,39 @@
     android:orientation="vertical"
     android:paddingLeft="24dp"
     android:paddingRight="24dp"
-    android:paddingTop="120dp"
+    android:paddingTop="110dp"
     android:paddingBottom="12dp"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
         tools:text="Welcome to"
         android:id="@+id/label1"
         android:fontFamily="sans-serif-condensed-light"
-        android:textSize="20sp"
+        android:textSize="18sp"
         android:textColor="@color/black"
         android:background="@color/white"
+        android:paddingTop="10dp"
         android:paddingRight="20dp"
         android:paddingLeft="20dp"
+        android:gravity="center"
         android:layout_gravity="center_horizontal" />
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
         tools:text="Represent!"
         android:id="@+id/label2"
         android:fontFamily="sans-serif-condensed-light"
-        android:textSize="20sp"
+        android:textSize="18sp"
         android:textColor="@color/black"
         android:background="@color/white"
+        android:paddingBottom="10dp"
         android:paddingRight="20dp"
         android:paddingLeft="20dp"
+        android:gravity="center"
         android:layout_gravity="center_horizontal" />
 
 </LinearLayout>

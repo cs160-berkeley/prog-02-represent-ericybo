@@ -48,12 +48,12 @@
                 android:layout_marginBottom="10dp"
                 layout="@layout/rep3"/>
 
-            <!--<include android:id="@+id/rep4"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="120dp"-->
-                <!--android:layout_below="@id/rep3"-->
-                <!--android:layout_marginBottom="10dp"-->
-                <!--layout="@layout/rep4"/>-->
+            <include android:id="@+id/rep4"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:layout_below="@id/rep3"
+                android:layout_marginBottom="10dp"
+                layout="@layout/rep4"/>
         </RelativeLayout>
     </ScrollView>
 

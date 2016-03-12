@@ -21,11 +21,21 @@ public class WatchListenerService extends WearableListenerService {
     @Override
     public void onMessageReceived(MessageEvent messageEvent) {
         //parse data here and put them into diff extra for the intent to be sent to WearActivity
+        Intent intent = new Intent(this, WearActivity.class);
         String value = new String(messageEvent.getData(), StandardCharsets.UTF_8);
+        String[] path = messageEvent.getPath().split("\\|");
+        String zipOrLatLon = path[0];
+        intent.putExtra("zipOrLatLon", zipOrLatLon);
+        String state = path[1];
+        String county = path[2];
+        String obama = path[3];
+        String romney = path[4];
+        intent.putExtra("state", state);
+        intent.putExtra("county", county);
+        intent.putExtra("obama", obama);
+        intent.putExtra("romney", romney);
         String[] data = value.split("\\;");
         String[] keys = {"senOrRep1", "name1", "party1", "senOrRep2", "name2", "party2", "senOrRep3", "name3", "party3", "senOrRep4", "name4", "party4"};
-        Intent intent = new Intent(this, WearActivity.class);
-        //Log.d("TAG", "hi");
         for (int i = 0; i < data.length; i++) {
             //Log.d("TAG", "key: " + keys[i] + "; data: " + data[i]);
             intent.putExtra(keys[i], data[i]);

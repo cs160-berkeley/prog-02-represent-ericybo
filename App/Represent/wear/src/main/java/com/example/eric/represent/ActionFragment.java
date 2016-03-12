@@ -15,6 +15,7 @@ import android.widget.TextView;
  * Originally from: http://stackoverflow.com/questions/24969086/is-there-an-easy-way-to-create-an-action-button-fragment
  */
 public class ActionFragment extends Fragment implements View.OnClickListener {
+//    public class ActionFragment extends Fragment {
 
     private static Listener mListener;
     private TextView vLabel1;
@@ -46,8 +47,7 @@ public class ActionFragment extends Fragment implements View.OnClickListener {
     }
 
     @Override
-    public void onClick(View v) {
-        mListener.onActionPerformed();
+    public void onClick(View v) { mListener.onActionPerformed();
     }
 
     public interface Listener {
